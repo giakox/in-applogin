@@ -9,33 +9,61 @@ router.patch('/', async (req, res) => {
       return res.status(400).json({ error: 'MISSING_CODE' });
     }
 
-    const { data, error } = await supabase
+    // 1️⃣ cerchiamo il ticket + persona
+    const { data: ticket, error: findError } = await supabase
       .from('tickets')
-      .update({
-        used: true,
-        used_at: new Date().toISOString()
-      })
-      .eq('code', code)
-      .eq('used', false)
       .select(`
         id,
+        used,
+        person_id,
         people (
           nome,
           cognome,
           telefono,
           referente,
-          incassato
+          incassato,
+          inviti
         )
       `)
+      .eq('code', code)
       .single();
 
-    if (error || !data || !data.people) {
-      return res.status(400).json({ error: 'INVALID_OR_ALREADY_USED' });
+    if (findError || !ticket) {
+      return res.status(404).json({ error: 'INVALID' });
     }
 
-    return res.status(200).json({
-      ok: true,
-      person: data.people
+    // 2️⃣ contiamo quanti ingressi ha già fatto questa persona
+    const { count: usedCount } = await supabase
+      .from('tickets')
+      .select('*', { count: 'exact', head: true })
+      .eq('person_id', ticket.person_id)
+      .eq('used', true);
+
+    // 3️⃣ se NON è ancora usato → lo segniamo
+    let alreadyUsed = ticket.used;
+
+    if (!ticket.used) {
+      await supabase
+        .from('tickets')
+        .update({
+          used: true,
+          used_at: new Date().toISOString()
+        })
+        .eq('id', ticket.id);
+    }
+
+    // 4️⃣ risposta SEMPRE completa
+    return res.json({
+      ok: !alreadyUsed,
+      error: alreadyUsed ? 'ALREADY_USED' : null,
+      person: {
+        nome: ticket.people.nome,
+        cognome: ticket.people.cognome,
+        telefono: ticket.people.telefono,
+        referente: ticket.people.referente,
+        incassato: ticket.people.incassato,
+        ingresso: `${alreadyUsed ? usedCount : usedCount + 1}/${ticket.people.inviti}`
+      }
     });
 
   } catch (err) {

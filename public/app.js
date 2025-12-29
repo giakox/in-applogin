@@ -29,6 +29,7 @@ async function loadStats() {
 ------------------------- */
 function resetUI() {
   resultEl.textContent = '';
+  resultEl.className = '';
   infoEl.innerHTML = '';
 }
 
@@ -45,29 +46,50 @@ async function handleCode(code) {
       body: JSON.stringify({ code })
     });
 
-    const data = await res.json();
+    const text = await res.text();
+    let data;
 
-    if (res.ok) {
-      resultEl.textContent = '✅ ACCESSO OK';
-      resultEl.className = 'ok';
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error('INVALID_JSON_RESPONSE');
+    }
 
-      const p = data.person;
+    // ❌ QR NON VALIDO
+    if (!res.ok && data.error === 'INVALID') {
+      resultEl.textContent = '❌ QR NON VALIDO';
+      resultEl.className = 'error';
+      return;
+    }
 
-      infoEl.innerHTML = `
-        <div><b>${p.nome} ${p.cognome}</b></div>
-        <div>📞 ${p.telefono || '—'}</div>
-        <div>👤 Referente: ${p.referente || '—'}</div>
-        <div class="badge ${p.incassato ? 'paid' : 'unpaid'}">
-          ${p.incassato ? 'INCASSATO' : '⚠ DA PAGARE'}
-        </div>
-      `;
-
-      loadStats();
-    } else {
-      resultEl.textContent = `❌ ${data.error}`;
+    // ⚠️ GIÀ USATO (ma info disponibili)
+    if (data.error === 'ALREADY_USED') {
+      resultEl.textContent = '⚠️ GIÀ USATO';
       resultEl.className = 'error';
     }
+
+    // ✅ ACCESSO OK
+    if (data.ok) {
+      resultEl.textContent = '✅ ACCESSO OK';
+      resultEl.className = 'ok';
+    }
+
+    const p = data.person;
+
+    infoEl.innerHTML = `
+      <div><b>${p.nome} ${p.cognome}</b></div>
+      <div>📞 ${p.telefono || '—'}</div>
+      <div>👤 Referente: ${p.referente || '—'}</div>
+      <div>🎟 Ingressi: <b>${p.ingresso}</b></div>
+      <div class="badge ${p.incassato ? 'paid' : 'unpaid'}">
+        ${p.incassato ? 'INCASSATO' : '⚠ DA PAGARE'}
+      </div>
+    `;
+
+    loadStats();
+
   } catch (err) {
+    console.error(err);
     resultEl.textContent = '❌ ERRORE DI RETE';
     resultEl.className = 'error';
   }
