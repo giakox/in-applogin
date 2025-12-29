@@ -2,26 +2,42 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Check-in</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Check-in Evento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 
-  <h1>🎟️ Check-in</h1>
+  <h2 class="title">🎟 Check-in Evento</h2>
 
-  <div id="stats">
-    <div><strong>Totali:</strong> <span id="total">–</span></div>
-    <div><strong>Entrati:</strong> <span id="checkedIn">–</span></div>
-    <div><strong>Restanti:</strong> <span id="remaining">–</span></div>
+  <video id="video"></video>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="label">Totali</div>
+      <b id="total">–</b>
+    </div>
+    <div class="stat">
+      <div class="label">Entrati</div>
+      <b id="checkedIn">–</b>
+    </div>
+    <div class="stat">
+      <div class="label">Rimasti</div>
+      <b id="remaining">–</b>
+    </div>
   </div>
 
-  <video id="video" autoplay playsinline></video>
-
+  <!-- RISULTATO -->
   <div id="result"></div>
 
-  <!-- libreria QR -->
-  <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
-  <script src="app.js"></script>
+  <!-- INFO PERSONA -->
+  <div id="info"></div>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/qr-scanner/qr-scanner.umd.min.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>

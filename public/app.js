@@ -1,36 +1,90 @@
 const video = document.getElementById('video');
-const result = document.getElementById('result');
-const info = document.getElementById('info');
+const resultEl = document.getElementById('result');
+const infoEl = document.getElementById('info');
 
-async function handleCode(code) {
-  const res = await fetch('/api/checkin', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code })
-  });
+const totalEl = document.getElementById('total');
+const checkedInEl = document.getElementById('checkedIn');
+const remainingEl = document.getElementById('remaining');
 
-  const data = await res.json();
+let scanner;
 
-  if (res.ok) {
-    result.textContent = '✅ OK';
-    info.innerHTML = `
-      <p><b>${data.person.nome} ${data.person.cognome}</b></p>
-      <p>${data.person.telefono}</p>
-      <p>Referente: ${data.person.referente}</p>
-      <p style="color:${data.person.incassato ? 'green' : 'red'}">
-        ${data.person.incassato ? 'INCASSATO' : 'DA PAGARE'}
-      </p>
-    `;
-    setTimeout(() => info.innerHTML = '', 3000);
-  } else {
-    result.textContent = '❌ ' + data.error;
+/* -------------------------
+   STATS
+------------------------- */
+async function loadStats() {
+  try {
+    const res = await fetch('/api/stats');
+    const data = await res.json();
+
+    totalEl.textContent = data.total;
+    checkedInEl.textContent = data.checkedIn;
+    remainingEl.textContent = data.remaining;
+  } catch (err) {
+    console.error('Errore stats', err);
   }
 }
 
-const scanner = new QrScanner(video, res => {
-  scanner.stop();
-  handleCode(res.data);
-  setTimeout(() => scanner.start(), 1500);
-});
+/* -------------------------
+   RESET UI
+------------------------- */
+function resetUI() {
+  resultEl.textContent = '';
+  infoEl.innerHTML = '';
+}
+
+/* -------------------------
+   CHECK-IN
+------------------------- */
+async function handleCode(code) {
+  resetUI();
+
+  try {
+    const res = await fetch('/api/checkin', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      resultEl.textContent = '✅ ACCESSO OK';
+      resultEl.className = 'ok';
+
+      const p = data.person;
+
+      infoEl.innerHTML = `
+        <div><b>${p.nome} ${p.cognome}</b></div>
+        <div>📞 ${p.telefono || '—'}</div>
+        <div>👤 Referente: ${p.referente || '—'}</div>
+        <div class="badge ${p.incassato ? 'paid' : 'unpaid'}">
+          ${p.incassato ? 'INCASSATO' : '⚠ DA PAGARE'}
+        </div>
+      `;
+
+      loadStats();
+    } else {
+      resultEl.textContent = `❌ ${data.error}`;
+      resultEl.className = 'error';
+    }
+  } catch (err) {
+    resultEl.textContent = '❌ ERRORE DI RETE';
+    resultEl.className = 'error';
+  }
+}
+
+/* -------------------------
+   QR SCANNER
+------------------------- */
+scanner = new QrScanner(
+  video,
+  res => {
+    scanner.stop();
+    handleCode(res.data);
+    setTimeout(() => scanner.start(), 1500);
+  },
+  { highlightScanRegion: true }
+);
 
 scanner.start();
+loadStats();

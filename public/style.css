@@ -1,39 +1,94 @@
+/* RESET */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: system-ui, sans-serif;
-  background: #111;
-  color: #fff;
-  text-align: center;
+  margin: 0;
   padding: 16px;
+  background: #0f0f0f;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
-h1 {
-  margin-bottom: 8px;
-}
-
-#stats {
-  display: flex;
-  justify-content: space-around;
+/* TITOLI */
+.title {
   margin-bottom: 12px;
-  font-size: 14px;
 }
 
+/* VIDEO */
 video {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   border-radius: 12px;
-  margin-top: 10px;
+  margin-bottom: 12px;
+  background: #000;
 }
 
+/* STATS */
+.stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.stat {
+  background: #1c1c1c;
+  border-radius: 10px;
+  padding: 10px;
+  flex: 1;
+}
+
+.stat .label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* RISULTATO */
 #result {
-  margin-top: 14px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
+  margin: 12px 0;
 }
 
-.success {
-  color: #2ecc71;
+.ok {
+  color: #00ff99;
 }
 
 .error {
-  color: #e74c3c;
+  color: #ff4d4d;
+}
+
+/* INFO PERSONA */
+#info {
+  background: #1c1c1c;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 12px;
+  text-align: left;
+}
+
+#info div {
+  margin-bottom: 6px;
+}
+
+/* BADGE */
+.badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.paid {
+  background: #1db954;
+  color: #000;
+}
+
+.unpaid {
+  background: #d32f2f;
+  color: #fff;
 }
