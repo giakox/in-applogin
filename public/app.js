@@ -49,41 +49,63 @@ async function loadStats() {
 /* ---------------- CHECK-IN QR ---------------- */
 async function handleCode(code) {
   resultEl.textContent = '';
+  resultEl.className = '';
   infoEl.innerHTML = '';
 
-  const res = await fetch('/api/checkin', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code })
-  });
+  try {
+    const res = await fetch('/api/checkin', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (data.error === 'INVALID') {
-    resultEl.textContent = '❌ QR NON VALIDO';
+    // ❌ QR NON VALIDO
+    if (data.error === 'INVALID') {
+      resultEl.textContent = '❌ QR NON VALIDO';
+      resultEl.className = 'error';
+      return;
+    }
+
+    // ⚠️ GIÀ USATO
+    if (data.error === 'ALREADY_USED') {
+      resultEl.textContent = '⚠️ GIÀ USATO';
+      resultEl.className = 'error';
+    }
+
+    // ✅ SOLO SE ok === true
+    if (data.ok === true) {
+      resultEl.textContent = '✅ ACCESSO OK';
+      resultEl.className = 'ok';
+    }
+
+    // 🔒 SICUREZZA: se non c’è person → non renderizzare
+    if (!data.person) {
+      console.warn('Risposta senza person', data);
+      return;
+    }
+
+    const p = data.person;
+
+    infoEl.innerHTML = `
+      <div><b>${p.nome} ${p.cognome}</b></div>
+      <div>📞 ${p.telefono || '—'}</div>
+      <div>👤 Referente: ${p.referente || '—'}</div>
+      <div>💰 Ritirato da: ${p.ritiratoDa || '—'}</div>
+      <div>🎟 Ingressi: <b>${p.ingresso}</b></div>
+      <div class="badge ${p.incassato ? 'paid' : 'unpaid'}">
+        ${p.incassato ? 'INCASSATO' : '⚠ DA PAGARE'}
+      </div>
+    `;
+
+    loadStats();
+
+  } catch (err) {
+    console.error('CHECKIN ERROR', err);
+    resultEl.textContent = '❌ ERRORE DI RETE';
     resultEl.className = 'error';
-    return;
   }
-
-  if (data.error === 'ALREADY_USED') {
-    resultEl.textContent = '⚠️ GIÀ USATO';
-    resultEl.className = 'error';
-  } else {
-    resultEl.textContent = '✅ ACCESSO OK';
-    resultEl.className = 'ok';
-  }
-
-  const p = data.person;
-
-  infoEl.innerHTML = `
-    <b>${p.nome} ${p.cognome}</b><br/>
-    📞 ${p.telefono || '—'}<br/>
-    👤 Referente: ${p.referente || '—'}<br/>
-    💰 Ritirato da: ${p.ritiratoDa || '—'}<br/>
-    🎟 Ingressi: <b>${p.ingresso}</b>
-  `;
-
-  loadStats();
 }
 
 QrScanner.WORKER_PATH =
