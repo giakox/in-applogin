@@ -17,11 +17,10 @@ router.get('/', async (req, res) => {
 
   if (error) {
     console.error('DOORLIST ERROR', error);
-    return res.status(500).json({ error: 'LOAD_FAILED' });
+    return res.json([]); // 🔑 MAI 500
   }
 
-  // 🔑 FILTRIAMO TUTTO QUELLO CHE È ROTTO
-  const clean = (data || [])
+  const result = (data || [])
     .filter(t => t.people)
     .map(t => ({
       ticketId: t.id,
@@ -30,7 +29,7 @@ router.get('/', async (req, res) => {
       cognome: t.people.cognome
     }));
 
-  res.json(clean);
+  res.json(result);
 });
 
 module.exports = router;
