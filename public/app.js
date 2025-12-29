@@ -114,6 +114,8 @@ QrScanner.WORKER_PATH =
 scanner = new QrScanner(
   video,
   result => {
+    console.log('RAW SCAN RESULT:', result);
+
     scanner.stop();
 
     const code =
@@ -121,8 +123,10 @@ scanner = new QrScanner(
         ? result
         : result?.data || result?.data?.text || result?.text;
 
+    console.log('PARSED CODE:', code);
+
     if (!code) {
-      console.warn('QR senza contenuto valido', result);
+      console.warn('QR senza contenuto valido');
       scanner.start();
       return;
     }
