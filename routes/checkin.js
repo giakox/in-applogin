@@ -9,8 +9,8 @@ router.patch('/', async (req, res) => {
       return res.status(400).json({ error: 'MISSING_CODE' });
     }
 
-    // 1️⃣ cerchiamo il ticket + persona
-    const { data: ticket, error: findError } = await supabase
+    // 1️⃣ trova ticket + persona
+    const { data: ticket, error } = await supabase
       .from('tickets')
       .select(`
         id,
@@ -21,6 +21,7 @@ router.patch('/', async (req, res) => {
           cognome,
           telefono,
           referente,
+          ritirato_da,
           incassato,
           inviti
         )
@@ -28,21 +29,21 @@ router.patch('/', async (req, res) => {
       .eq('code', code)
       .single();
 
-    if (findError || !ticket) {
+    if (error || !ticket) {
       return res.status(404).json({ error: 'INVALID' });
     }
 
-    // 2️⃣ contiamo quanti ingressi ha già fatto questa persona
+    // 2️⃣ conta ingressi già fatti
     const { count: usedCount } = await supabase
       .from('tickets')
       .select('*', { count: 'exact', head: true })
       .eq('person_id', ticket.person_id)
       .eq('used', true);
 
-    // 3️⃣ se NON è ancora usato → lo segniamo
-    let alreadyUsed = ticket.used;
+    const alreadyUsed = ticket.used;
 
-    if (!ticket.used) {
+    // 3️⃣ segna ingresso se valido
+    if (!alreadyUsed) {
       await supabase
         .from('tickets')
         .update({
@@ -52,7 +53,6 @@ router.patch('/', async (req, res) => {
         .eq('id', ticket.id);
     }
 
-    // 4️⃣ risposta SEMPRE completa
     return res.json({
       ok: !alreadyUsed,
       error: alreadyUsed ? 'ALREADY_USED' : null,
@@ -61,13 +61,14 @@ router.patch('/', async (req, res) => {
         cognome: ticket.people.cognome,
         telefono: ticket.people.telefono,
         referente: ticket.people.referente,
+        ritiratoDa: ticket.people.ritirato_da,
         incassato: ticket.people.incassato,
         ingresso: `${alreadyUsed ? usedCount : usedCount + 1}/${ticket.people.inviti}`
       }
     });
 
   } catch (err) {
-    console.error('CHECKIN ERROR', err);
+    console.error(err);
     return res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });
