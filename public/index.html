@@ -2,41 +2,48 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Check-in Evento</title>
+  <title>Door App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CSS -->
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 
-  <h2 class="title">🎟 Check-in Evento</h2>
+  <!-- SCANNER VIEW -->
+  <div id="scannerView" class="view active">
+    <h2>📷 Scanner</h2>
 
-  <video id="video"></video>
+    <video id="video"></video>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat">
-      <div class="label">Totali</div>
-      <b id="total">–</b>
+    <div class="stats">
+      <div><b id="total">–</b><br/>Totali</div>
+      <div><b id="checkedIn">–</b><br/>Entrati</div>
+      <div><b id="remaining">–</b><br/>Rimasti</div>
     </div>
-    <div class="stat">
-      <div class="label">Entrati</div>
-      <b id="checkedIn">–</b>
-    </div>
-    <div class="stat">
-      <div class="label">Rimasti</div>
-      <b id="remaining">–</b>
-    </div>
+
+    <div id="result"></div>
+    <div id="info"></div>
   </div>
 
-  <!-- RISULTATO -->
-  <div id="result"></div>
+  <!-- DOORLIST VIEW -->
+  <div id="doorlistView" class="view">
+    <h2>📋 Doorlist</h2>
 
-  <!-- INFO PERSONA -->
-  <div id="info"></div>
+    <input
+      type="text"
+      id="search"
+      placeholder="Cerca nome..."
+    />
 
-  <!-- SCRIPTS -->
+    <div id="doorlist"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button id="tabScanner" class="active">📷</button>
+    <button id="tabDoorlist">📋</button>
+  </nav>
+
   <script src="https://unpkg.com/qr-scanner/qr-scanner.umd.min.js"></script>
   <script src="/app.js"></script>
 </body>

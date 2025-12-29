@@ -1,28 +1,35 @@
-/* RESET */
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  padding: 16px;
-  background: #0f0f0f;
-  color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif;
+  padding-bottom: 70px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: #f7f7f7;
+  color: #111;
+}
+
+h2 {
+  margin: 12px 0;
   text-align: center;
 }
 
-/* TITOLI */
-.title {
-  margin-bottom: 12px;
+/* VIEWS */
+.view {
+  display: none;
+  padding: 12px;
+}
+
+.view.active {
+  display: block;
 }
 
 /* VIDEO */
 video {
   width: 100%;
-  max-width: 420px;
+  max-height: 260px;
   border-radius: 12px;
-  margin-bottom: 12px;
   background: #000;
 }
 
@@ -30,65 +37,84 @@ video {
 .stats {
   display: flex;
   justify-content: space-around;
-  gap: 8px;
-  margin: 12px 0;
+  margin: 10px 0;
+  text-align: center;
 }
 
-.stat {
-  background: #1c1c1c;
-  border-radius: 10px;
-  padding: 10px;
-  flex: 1;
-}
-
-.stat .label {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-/* RISULTATO */
+/* RESULT */
 #result {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  margin: 12px 0;
+  margin-top: 8px;
 }
 
-.ok {
-  color: #00ff99;
+#result.ok {
+  color: #2ecc71;
 }
 
-.error {
-  color: #ff4d4d;
+#result.error {
+  color: #e74c3c;
 }
 
-/* INFO PERSONA */
+/* INFO */
 #info {
-  background: #1c1c1c;
+  background: #fff;
   border-radius: 12px;
-  padding: 14px;
-  margin-top: 12px;
-  text-align: left;
+  padding: 12px;
+  margin-top: 10px;
 }
 
-#info div {
-  margin-bottom: 6px;
+/* DOORLIST */
+#search {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
 }
 
-/* BADGE */
-.badge {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-weight: bold;
+.door-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 8px;
 }
 
-.paid {
-  background: #1db954;
-  color: #000;
+.check-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #bbb;
+  background: white;
 }
 
-.unpaid {
-  background: #d32f2f;
-  color: #fff;
+.check-btn.used {
+  background: #2ecc71;
+  border-color: #2ecc71;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #fff;
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.bottom-nav button {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 22px;
+}
+
+.bottom-nav button.active {
+  color: #2ecc71;
 }
