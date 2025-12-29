@@ -6,7 +6,7 @@ const supabase = require('../lib/supabase');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER,
+    user: 'giacomo.dotto05@gmail.com',
     pass: process.env.EMAIL_PASS
   }
 });
