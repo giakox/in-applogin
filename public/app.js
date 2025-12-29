@@ -111,11 +111,27 @@ async function handleCode(code) {
 QrScanner.WORKER_PATH =
   'https://unpkg.com/qr-scanner@1.4.2/qr-scanner-worker.min.js';
 /* ---------------- QR SCANNER ---------------- */
-scanner = new QrScanner(video, res => {
-  scanner.stop();
-  handleCode(res.data);
-  setTimeout(() => scanner.start(), 1500);
-});
+scanner = new QrScanner(
+  video,
+  result => {
+    scanner.stop();
+
+    const code =
+      typeof result === 'string'
+        ? result
+        : result?.data || result?.data?.text || result?.text;
+
+    if (!code) {
+      console.warn('QR senza contenuto valido', result);
+      scanner.start();
+      return;
+    }
+
+    handleCode(code);
+    setTimeout(() => scanner.start(), 1500);
+  },
+  { highlightScanRegion: true }
+);
 
 scanner.start();
 loadStats();
