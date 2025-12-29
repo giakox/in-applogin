@@ -1,62 +1,40 @@
-const fs = require('fs');
-const path = require('path');
+require('dotenv').config();
 const QRCode = require('qrcode');
 const nodemailer = require('nodemailer');
+const supabase = require('../lib/supabase');
 
-const people = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/people.json'), 'utf-8')
-);
-const tickets = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/tickets.json'), 'utf-8')
-);
-
-// email
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'giacomo.dotto05@gmail.com',
-    pass: 'ydex rnkz ryam qaos'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
-// assicurati cartella qr
-const qrDir = path.join(__dirname, 'qrs');
-if (!fs.existsSync(qrDir)) fs.mkdirSync(qrDir);
-
 async function main() {
+  const { data: people } = await supabase.from('people').select('*');
+  const { data: tickets } = await supabase.from('tickets').select('*');
+
   for (const person of people) {
-    const personTickets = tickets.filter(
-      t => t.personId === person.id
-    );
+    const personTickets = tickets.filter(t => t.person_id === person.id);
 
     for (const ticket of personTickets) {
-      const qrFile = path.join(qrDir, `ticket-${ticket.id}.png`);
-
-      await QRCode.toFile(qrFile, ticket.code, {
-        width: 300,
-        margin: 2
-      });
+      const qr = await QRCode.toDataURL(ticket.code);
 
       await transporter.sendMail({
-        from: '"Evento 🎉" <giacomo.dotto05@gmail.com>',
+        from: '"Evento 🎉"',
         to: person.email,
         subject: 'Il tuo biglietto QR',
         html: `
           <p>Ciao ${person.nome},</p>
-          <p>Questo è uno dei tuoi biglietti.</p>
-          <p>Mostra il QR all’ingresso.</p>
-        `,
-        attachments: [
-          {
-            filename: 'biglietto.png',
-            path: qrFile
-          }
-        ]
+          <p>Mostra questo QR all’ingresso.</p>
+          <img src="${qr}" />
+        `
       });
-
-      console.log(`Inviato ticket ${ticket.code} a ${person.email}`);
     }
   }
+
+  console.log('Email inviate');
 }
 
 main();

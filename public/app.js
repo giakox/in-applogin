@@ -1,61 +1,36 @@
 const video = document.getElementById('video');
 const result = document.getElementById('result');
+const info = document.getElementById('info');
 
-const totalEl = document.getElementById('total');
-const checkedInEl = document.getElementById('checkedIn');
-const remainingEl = document.getElementById('remaining');
+async function handleCode(code) {
+  const res = await fetch('/api/checkin', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code })
+  });
 
-
-
-let scanner;
-
-// aggiorna stats
-async function loadStats() {
-  const res = await fetch('/api/stats');
   const data = await res.json();
 
-  totalEl.textContent = data.total;
-  checkedInEl.textContent = data.checkedIn;
-  remainingEl.textContent = data.remaining;
-}
-
-// check-in QR
-async function handleCode(code) {
-  try {
-    const res = await fetch('/api/checkin', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      result.textContent = '✅ OK';
-      result.className = 'success';
-      loadStats();
-    } else {
-      result.textContent = `❌ ${data.error}`;
-      result.className = 'error';
-    }
-  } catch (err) {
-    result.textContent = 'Errore di rete';
-    result.className = 'error';
+  if (res.ok) {
+    result.textContent = '✅ OK';
+    info.innerHTML = `
+      <p><b>${data.person.nome} ${data.person.cognome}</b></p>
+      <p>${data.person.telefono}</p>
+      <p>Referente: ${data.person.referente}</p>
+      <p style="color:${data.person.incassato ? 'green' : 'red'}">
+        ${data.person.incassato ? 'INCASSATO' : 'DA PAGARE'}
+      </p>
+    `;
+    setTimeout(() => info.innerHTML = '', 3000);
+  } else {
+    result.textContent = '❌ ' + data.error;
   }
 }
 
-// avvio scanner
-scanner = new QrScanner(
-  video,
-  res => {
-    scanner.stop();
-    handleCode(res.data);
-    setTimeout(() => scanner.start(), 1500);
-  },
-  { highlightScanRegion: true }
-);
+const scanner = new QrScanner(video, res => {
+  scanner.stop();
+  handleCode(res.data);
+  setTimeout(() => scanner.start(), 1500);
+});
 
 scanner.start();
-loadStats();
-
-

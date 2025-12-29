@@ -3,8 +3,8 @@
     "id": 1,
     "code": "347ato7lhi",
     "personId": 1,
-    "used": true,
-    "usedAt": "2025-12-29T00:16:20.782Z"
+    "used": false,
+    "usedAt": null
   },
   {
     "id": 2,
