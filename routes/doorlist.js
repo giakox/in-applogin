@@ -8,23 +8,29 @@ router.get('/', async (req, res) => {
     .select(`
       id,
       used,
+      person_id,
       people (
         nome,
         cognome
       )
-    `)
-    .order('id');
+    `);
 
   if (error) {
+    console.error('DOORLIST ERROR', error);
     return res.status(500).json({ error: 'LOAD_FAILED' });
   }
 
-  res.json(data.map(t => ({
-    ticketId: t.id,
-    used: t.used,
-    nome: t.people.nome,
-    cognome: t.people.cognome
-  })));
+  // 🔑 FILTRIAMO TUTTO QUELLO CHE È ROTTO
+  const clean = (data || [])
+    .filter(t => t.people)
+    .map(t => ({
+      ticketId: t.id,
+      used: t.used,
+      nome: t.people.nome,
+      cognome: t.people.cognome
+    }));
+
+  res.json(clean);
 });
 
 module.exports = router;

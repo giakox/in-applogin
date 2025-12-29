@@ -86,6 +86,8 @@ async function handleCode(code) {
   loadStats();
 }
 
+QrScanner.WORKER_PATH =
+  'https://unpkg.com/qr-scanner@1.4.2/qr-scanner-worker.min.js';
 /* ---------------- QR SCANNER ---------------- */
 scanner = new QrScanner(video, res => {
   scanner.stop();
