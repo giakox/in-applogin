@@ -16,11 +16,7 @@ app.use(express.json());
 app.use('/api/attendees', attendeesRouter);
 app.use('/api/checkin', checkinRouter);
 app.use('/api/stats', statsRouter);
-
-
-app.get('/', (req, res) => {
-  res.sendFile('./public/index.html')
-});
+app.use(express.static('public'));
 
 
 module.exports = app;
