@@ -1,0 +1,2 @@
+node ./scripts/converter.js
+node ./scripts/tickets.js

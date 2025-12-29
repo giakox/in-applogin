@@ -1,0 +1,39 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #111;
+  color: #fff;
+  text-align: center;
+  padding: 16px;
+}
+
+h1 {
+  margin-bottom: 8px;
+}
+
+#stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+video {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+#result {
+  margin-top: 14px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.success {
+  color: #2ecc71;
+}
+
+.error {
+  color: #e74c3c;
+}

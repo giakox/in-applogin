@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "code": "347ato7lhi",
+    "personId": 1,
+    "used": true,
+    "usedAt": "2025-12-29T00:16:20.782Z"
+  },
+  {
+    "id": 2,
+    "code": "2nkz4dddm7",
+    "personId": 2,
+    "used": false,
+    "usedAt": null
+  },
+  {
+    "id": 3,
+    "code": "olgpn2w1gs",
+    "personId": 2,
+    "used": false,
+    "usedAt": null
+  },
+  {
+    "id": 4,
+    "code": "vi664emzw3",
+    "personId": 2,
+    "used": false,
+    "usedAt": null
+  },
+  {
+    "id": 5,
+    "code": "df744860vx",
+    "personId": 3,
+    "used": false,
+    "usedAt": null
+  },
+  {
+    "id": 6,
+    "code": "2tnc46e9t0",
+    "personId": 3,
+    "used": false,
+    "usedAt": null
+  }
+]

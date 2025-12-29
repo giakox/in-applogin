@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "nome": "Greta",
+    "cognome": "Savio",
+    "email": "giacomo.dotto05@gmail.com",
+    "telefono": "3319457428",
+    "inviti": 1,
+    "referente": "Pole",
+    "incassato": true,
+    "biglietti": [
+      "347ato7lhi"
+    ]
+  },
+  {
+    "id": 2,
+    "nome": "Elisa Stella",
+    "cognome": "Malvestio",
+    "email": "mailsdott@gmail.com",
+    "telefono": "3516157295",
+    "inviti": 3,
+    "referente": "cagagnogno",
+    "incassato": false,
+    "biglietti": [
+      "2nkz4dddm7",
+      "olgpn2w1gs",
+      "vi664emzw3"
+    ]
+  },
+  {
+    "id": 3,
+    "nome": "pinco",
+    "cognome": "pallo",
+    "email": "giacomo@samoildynamics.it",
+    "telefono": "3516157295",
+    "inviti": 2,
+    "referente": "gloria",
+    "incassato": false,
+    "biglietti": [
+      "df744860vx",
+      "2tnc46e9t0"
+    ]
+  }
+]
