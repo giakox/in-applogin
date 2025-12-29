@@ -18,5 +18,10 @@ app.use('/api/checkin', checkinRouter);
 app.use('/api/stats', statsRouter);
 
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
 module.exports = app;
 
